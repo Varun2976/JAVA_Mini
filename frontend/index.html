@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Quiz Application</title>
+    <style>
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-image: url(https://i.pinimg.com/1200x/9e/23/f0/9e23f0e8bacb5f03ad6418a3bdd1727b.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+}
+
+/* Glass effect backdrop blur overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+h1 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 700;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    padding: 12px 30px;
+    background: rgba(102, 126, 234, 0.3);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn:hover {
+    background: rgba(118, 75, 162, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.nav-btn.active {
+    background: rgba(118, 75, 162, 0.6);
+    box-shadow: 0 5px 15px rgba(118, 75, 162, 0.5);
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    font-size: 14px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(102, 126, 234, 0.6);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+}
+
+select {
+    cursor: pointer;
+}
+
+select option {
+    background: rgba(102, 126, 234, 0.95);
+    color: white;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.btn {
+    padding: 12px 30px;
+    background: rgba(102, 126, 234, 0.4);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+    background: rgba(118, 75, 162, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.question-list {
+    margin-top: 30px;
+}
+
+.question-item {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border-left: 4px solid rgba(102, 126, 234, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.question-item h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.options {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.delete-btn {
+    background: rgba(220, 53, 69, 0.4);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: rgba(200, 35, 51, 0.6);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.quiz-question {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    border-left: 4px solid rgba(102, 126, 234, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-question h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #ffffff;
+}
+
+.radio-option:hover {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: translateX(5px);
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.result {
+    text-align: center;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.result h2 {
+    color: #ffffff;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.score-display {
+    font-size: 3em;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(118, 75, 162, 0.6);
+    margin: 20px 0;
+}
+
+.scoreboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.scoreboard-table th,
+.scoreboard-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.scoreboard-table th {
+    background: rgba(102, 126, 234, 0.4);
+    backdrop-filter: blur(10px);
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.scoreboard-table tr:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.rank {
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(102, 126, 234, 0.6);
+}
+
+.message {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+}
+
+.success {
+    background: rgba(212, 237, 218, 0.3);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(21, 87, 36, 0.2);
+}
+
+.error {
+    background: rgba(248, 215, 218, 0.3);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(114, 28, 36, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 25px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+    }
+    
+    .nav-btn {
+        width: 100%;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Application</h1>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('teacher')">Teacher</button>
+            <button class="nav-btn" onclick="showSection('student')">Student</button>
+            <button class="nav-btn" onclick="showSection('scoreboard')">Scoreboard</button>
+        </div>
+
+        <!-- Teacher Section -->
+        <div id="teacher" class="section active">
+            <h2>Teacher Panel - Add Questions</h2>
+            <div id="teacherMessage"></div>
+            
+            <form id="questionForm">
+                <div class="form-group">
+                    <label>Question:</label>
+                    <textarea id="questionText" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Option A:</label>
+                    <input type="text" id="optionA" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Option B:</label>
+                    <input type="text" id="optionB" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Option C:</label>
+                    <input type="text" id="optionC" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Option D:</label>
+                    <input type="text" id="optionD" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Correct Answer:</label>
+                    <select id="correctAnswer" required>
+                        <option value="">Select correct answer</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Add Question</button>
+            </form>
+
+            <div class="question-list" id="questionList"></div>
+        </div>
+
+        <!-- Student Section -->
+        <div id="student" class="section">
+            <h2>Student Panel - Take Quiz</h2>
+            <div id="studentMessage"></div>
+            
+            <div id="studentNameSection">
+                <div class="form-group">
+                    <label>Enter Your Name:</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                <button class="btn" onclick="startQuiz()">Start Quiz</button>
+            </div>
+
+            <div id="quizSection" style="display: none;">
+                <div id="quizQuestions"></div>
+                <button class="btn" onclick="submitQuiz()">Submit Quiz</button>
+            </div>
+
+            <div id="resultSection" style="display: none;"></div>
+        </div>
+
+        <!-- Scoreboard Section -->
+        <div id="scoreboard" class="section">
+            <h2>Scoreboard - Top Performers</h2>
+            <table class="scoreboard-table" id="scoreboardTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Student Name</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreboardBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let quizQuestions = [];
+
+        // Navigation
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+
+            if (section === 'teacher') {
+                loadQuestions();
+            } else if (section === 'scoreboard') {
+                loadScoreboard();
+            }
+        }
+
+        // Teacher Functions
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const question = {
+                questionText: document.getElementById('questionText').value,
+                optionA: document.getElementById('optionA').value,
+                optionB: document.getElementById('optionB').value,
+                optionC: document.getElementById('optionC').value,
+                optionD: document.getElementById('optionD').value,
+                correctAnswer: document.getElementById('correctAnswer').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/questions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(question)
+                });
+
+                if (response.ok) {
+                    showMessage('teacherMessage', 'Question added successfully!', 'success');
+                    document.getElementById('questionForm').reset();
+                    loadQuestions();
+                }
+            } catch (error) {
+                showMessage('teacherMessage', 'Error adding question', 'error');
+            }
+        });
+
+        async function loadQuestions() {
+            try {
+                const response = await fetch(`${API_URL}/questions`);
+                const questions = await response.json();
+                
+                const list = document.getElementById('questionList');
+                list.innerHTML = '<h3>Current Questions:</h3>';
+                
+                questions.forEach((q, index) => {
+                    list.innerHTML += `
+                        <div class="question-item">
+                            <h3>Q${index + 1}: ${q.questionText}</h3>
+                            <div class="options">
+                                <p>A) ${q.optionA}</p>
+                                <p>B) ${q.optionB}</p>
+                                <p>C) ${q.optionC}</p>
+                                <p>D) ${q.optionD}</p>
+                                <p><strong>Correct Answer: ${q.correctAnswer}</strong></p>
+                            </div>
+                            <button class="delete-btn" onclick="deleteQuestion(${q.id})">Delete</button>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        }
+
+        async function deleteQuestion(id) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                try {
+                    await fetch(`${API_URL}/questions/${id}`, { method: 'DELETE' });
+                    loadQuestions();
+                    showMessage('teacherMessage', 'Question deleted', 'success');
+                } catch (error) {
+                    showMessage('teacherMessage', 'Error deleting question', 'error');
+                }
+            }
+        }
+
+        // Student Functions
+        async function startQuiz() {
+            const name = document.getElementById('studentName').value.trim();
+            if (!name) {
+                showMessage('studentMessage', 'Please enter your name', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/quiz/questions`);
+                quizQuestions = await response.json();
+                
+                if (quizQuestions.length === 0) {
+                    showMessage('studentMessage', 'No questions available yet', 'error');
+                    return;
+                }
+
+                document.getElementById('studentNameSection').style.display = 'none';
+                document.getElementById('quizSection').style.display = 'block';
+                
+                const container = document.getElementById('quizQuestions');
+                container.innerHTML = '';
+                
+                quizQuestions.forEach((q, index) => {
+                    container.innerHTML += `
+                        <div class="quiz-question">
+                            <h3>Question ${index + 1}: ${q.questionText}</h3>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="q${q.id}" value="A" required>
+                                    <span>A) ${q.optionA}</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="q${q.id}" value="B">
+                                    <span>B) ${q.optionB}</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="q${q.id}" value="C">
+                                    <span>C) ${q.optionC}</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="q${q.id}" value="D">
+                                    <span>D) ${q.optionD}</span>
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                showMessage('studentMessage', 'Error loading quiz', 'error');
+            }
+        }
+
+        async function submitQuiz() {
+            const answers = [];
+            let allAnswered = true;
+
+            quizQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+                if (!selected) {
+                    allAnswered = false;
+                } else {
+                    answers.push({
+                        questionId: q.id,
+                        answer: selected.value
+                    });
+                }
+            });
+
+            if (!allAnswered) {
+                showMessage('studentMessage', 'Please answer all questions', 'error');
+                return;
+            }
+
+            const studentName = document.getElementById('studentName').value;
+            const submission = { studentName, answers };
+
+            try {
+                const response = await fetch(`${API_URL}/quiz/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submission)
+                });
+
+                const result = await response.json();
+                
+                document.getElementById('quizSection').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'block';
+                document.getElementById('resultSection').innerHTML = `
+                    <div class="result">
+                        <h2>Quiz Completed!</h2>
+                        <div class="score-display">${result.score}/${result.total}</div>
+                        <p style="font-size: 1.5em; color: #666;">
+                            ${result.percentage.toFixed(1)}%
+                        </p>
+                        <button class="btn" onclick="resetQuiz()">Take Quiz Again</button>
+                    </div>
+                `;
+            } catch (error) {
+                showMessage('studentMessage', 'Error submitting quiz', 'error');
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('studentNameSection').style.display = 'block';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('studentName').value = '';
+        }
+
+        // Scoreboard Functions
+        async function loadScoreboard() {
+            try {
+                const response = await fetch(`${API_URL}/scoreboard`);
+                const scores = await response.json();
+                
+                const tbody = document.getElementById('scoreboardBody');
+                tbody.innerHTML = '';
+                
+                scores.forEach((score, index) => {
+                    const percentage = ((score.score / score.totalQuestions) * 100).toFixed(1);
+                    const date = new Date(score.completedAt).toLocaleDateString();
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="rank">#${index + 1}</td>
+                            <td>${score.studentName}</td>
+                            <td>${score.score}/${score.totalQuestions}</td>
+                            <td>${percentage}%</td>
+                            <td>${date}</td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading scoreboard:', error);
+            }
+        }
+
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => { element.innerHTML = ''; }, 3000);
+        }
+
+        // Load questions on page load
+        loadQuestions();
+    </script>
+</body>
+</html>

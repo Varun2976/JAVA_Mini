@@ -1,3 +1,5 @@
+
+
 select * from student_scores;
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -36,3 +38,9 @@ SELECT id, question_text, teacher_id FROM questions;
 
 
 SELECT * FROM student_scores;
+INSERT INTO questions (question_text, option_a, option_b, option_c, option_d, correct_answer, teacher_id)
+VALUES
+('What is the capital of France?', 'Berlin', 'London', 'Paris', 'Rome', 'C', 1),
+('2 + 2 = ?', '3', '4', '5', '6', 'B', 1),
+('Which language runs in a web browser?', 'C', 'Python', 'Java', 'JavaScript', 'D', 1);
+SELECT * FROM questions;
